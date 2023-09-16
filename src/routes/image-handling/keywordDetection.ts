@@ -30,6 +30,7 @@ export function hasPanelDamageKeywords(predictions: string[]): boolean {
   const panelDamageKeywords = [
     'smashed',
     'broken',
+    'scratches',
   ];
   return predictions.some(
       (prediction: string) => panelDamageKeywords.indexOf(prediction) > -1,
