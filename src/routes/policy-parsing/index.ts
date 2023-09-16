@@ -6,7 +6,7 @@ import {isAffirmative} from './isAffirmative';
 
 dotenv.config();
 
-const CONTEXT_PATH = 'data/context.txt';
+const CONTEXT_PATH = 'data/contexts';
 const GOOGLE_CLOUD_AUTH_TOKEN = process.env.GOOGLE_CLOUD_AUTH_TOKEN;
 const GOOGLE_CLOUD_PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT_ID;
 
@@ -25,16 +25,19 @@ const router = Router();
 //                 Otherwise false.
 //         }
 router.post('/', async (req: Request, res: Response) => {
-  // NOTE: In a production environment, the code fetch the individual policy
-  // (or policies) for a particular user. This data would then be used as the
-  // AI's context. For the purpose of this demonstration, we assume that we
-  // only have one user who is already logged in.
-  const context = fs.readFileSync(CONTEXT_PATH).toString('utf-8');
+  let contextId = Number(req.query.context);
+  if (isNaN(contextId) || [1, 2, 3].indexOf(contextId) === -1) {
+    contextId = Math.floor(Math.random() * 3 + 1);
+  }
+
+  const baseContext = fs.readFileSync(`${CONTEXT_PATH}/base.txt`).toString('utf-8');
+  const additionalContext = fs.readFileSync(`${CONTEXT_PATH}/${contextId}.txt`).toString('utf-8');
+  const context = `${baseContext}\n\n${additionalContext}`;
 
   const questions = [
     'Does this policy cover fire damage?',
     'Does this policy cover glass damage?',
-    'Does this policy cover panel damage?',
+    'Does this policy cover bodywork damage?',
   ];
 
   const aiRequests = questions.map((question) => axios.post(
