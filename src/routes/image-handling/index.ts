@@ -86,7 +86,7 @@ router.post('/', upload.array('image'), async (req: Request, res: Response) => {
   );
 
   fs.rmSync(filePath);
-  
+
   console.log(aiResponses[1].predictions);
 
   if (aiResponses[0].predictions.indexOf('car') === -1) {

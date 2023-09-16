@@ -30,8 +30,12 @@ router.post('/', async (req: Request, res: Response) => {
     contextId = Math.floor(Math.random() * 3 + 1);
   }
 
-  const baseContext = fs.readFileSync(`${CONTEXT_PATH}/base.txt`).toString('utf-8');
-  const additionalContext = fs.readFileSync(`${CONTEXT_PATH}/${contextId}.txt`).toString('utf-8');
+  const baseContext = fs.readFileSync(
+      `${CONTEXT_PATH}/base.txt`,
+  ).toString('utf-8');
+  const additionalContext = fs.readFileSync(
+      `${CONTEXT_PATH}/${contextId}.txt`,
+  ).toString('utf-8');
   const context = `${baseContext}\n\n${additionalContext}`;
 
   const questions = [
