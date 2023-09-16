@@ -3,48 +3,48 @@
         "name": "Zurich Taxi Services",
         "type": "taxi",
         "location": {
-            "lat": 8.5373686,
-            "lng": 47.4117194
+            "lat": 47.4117194,
+            "lng": 8.5373686
         }
     },
     {
         "name": "Swiss Taxi Company",
         "type": "taxi",
         "location": {
-            "lat": 8.5373686,
-            "lng": 47.4117194
+            "lat": 47.4117194,
+            "lng": 8.5373686
         }
     },
     {
         "name": "EuroTaxis",
         "type": "taxi",
         "location": {
-            "lat": 8.5373686,
-            "lng": 47.4117194
+            "lat": 47.4117194,
+            "lng": 8.5373686
         }
     },
     {
         "name": "Zurich Car Rentals",
         "type": "car_rentals",
         "location": {
-            "lat": 8.5373686,
-            "lng": 47.4117194
+            "lat": 47.4117194,
+            "lng": 8.5373686
         }
     },
     {
         "name": "Swiss Car Rentals",
         "type": "car_rentals",
         "location": {
-            "lat": 8.5373686,
-            "lng": 47.4117194
+            "lat": 47.4117194,
+            "lng": 8.5373686
         }
     },
     {
         "name": "EuroCars",
         "type": "car_rentals",
         "location": {
-            "lat": 8.5373686,
-            "lng": 47.4117194
+            "lat": 47.4117194,
+            "lng": 8.5373686
         }
     }
 ]
