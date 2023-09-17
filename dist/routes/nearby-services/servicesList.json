@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Oerlikon Taxi",
+        "type": "taxi",
+        "location": {
+            "lat": 47.4117194,
+            "lng": 8.5373686
+        }
+    },
+    {
+        "name": "Birchler AG Car Services",
+        "type": "workshop",
+        "location": {
+            "lat": 47.4117194,
+            "lng": 8.5373686
+        }
+    },
+    {
+        "name": "Tiger AG Towing Service",
+        "type": "recovery",
+        "location": {
+            "lat": 47.4117194,
+            "lng": 8.5373686
+        }
+    }
+]
