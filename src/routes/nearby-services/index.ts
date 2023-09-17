@@ -17,7 +17,8 @@ const router = Router();
 //     HTTP 200: Services found and returned successfully.
 //         {
 //             name: The name of the service.
-//             type: The type of the service (always `taxi` or `car_rental`).
+//             type: The type of the service (always `taxi`, `workshop` or
+//                 `recovery`).
 //             location.lat: The latitude part of coordinates of the service.
 //             location.lng: The longitude part of coordinates of the service.
 //         }[]
@@ -34,8 +35,8 @@ router.get('/', (req: Request, res: Response) => {
   // NOTE: In a production environment, the code would search for real services
   // which could help someone who has been involved in an accident. These may
   // include taxi services, car rental companies, etc. This has been omitted
-  // here in order to avoid using real data in our prototype without
-  // permission. Instead, we choose randomly from a list of fake services.
+  // here because we do not have a dataset with these services. Instead, we
+  // choose from a pre-defined list.
 
   const selectedServices = servicesList.sort(
       () => 0.5 - Math.random(),
