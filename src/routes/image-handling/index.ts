@@ -55,50 +55,55 @@ router.post('/', upload.array('image'), async (req: Request, res: Response) => {
   const image = fs.readFileSync(filePath);
   const encodedImage = Buffer.from(image).toString('base64');
 
-  const prompts = [
-    'What does this picture contain?',
-    'What damage does this car have?',
-    'What model is this car?',
-  ];
-  const aiRequests = prompts.map((prompt) => axios.post(
-      `https://us-central1-aiplatform.googleapis.com/v1/projects/${GOOGLE_CLOUD_PROJECT_ID}/locations/us-central1/publishers/google/models/imagetext:predict`,
-      {
-        instances: [
-          {
-            prompt,
-            image: {
-              bytesBase64Encoded: encodedImage,
+  try {
+    const prompts = [
+      'What does this picture contain?',
+      'What damage does this car have?',
+      'What model is this car?',
+    ];
+    const aiRequests = prompts.map((prompt) => axios.post(
+        `https://us-central1-aiplatform.googleapis.com/v1/projects/${GOOGLE_CLOUD_PROJECT_ID}/locations/us-central1/publishers/google/models/imagetext:predict`,
+        {
+          instances: [
+            {
+              prompt,
+              image: {
+                bytesBase64Encoded: encodedImage,
+              },
             },
+          ],
+          parameters: {
+            sampleCount: 3,
           },
-        ],
-        parameters: {
-          sampleCount: 3,
         },
-      },
-      {
-        headers: {
-          'Authorization': `Bearer ${GOOGLE_CLOUD_AUTH_TOKEN}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${GOOGLE_CLOUD_AUTH_TOKEN}`,
+          },
         },
-      },
-  ));
-  const aiResponses = (await axios.all(aiRequests)).map(
-      (response) => response.data,
-  );
-
-  fs.rmSync(filePath);
-
-  console.log(aiResponses[1].predictions);
-
-  if (aiResponses[0].predictions.indexOf('car') === -1) {
-    return res.sendStatus(422);
+    ));
+    const aiResponses = (await axios.all(aiRequests)).map(
+        (response) => response.data,
+    );
+  
+    fs.rmSync(filePath);
+  
+    console.log(aiResponses[1].predictions);
+  
+    if (aiResponses[0].predictions.indexOf('car') === -1) {
+      return res.sendStatus(422);
+    }
+  
+    return res.status(200).send({
+      fireDamage: hasFireDamageKeywords(aiResponses[1].predictions),
+      glassDamage: hasGlassDamageKeywords(aiResponses[1].predictions),
+      panelDamage: hasPanelDamageKeywords(aiResponses[1].predictions),
+      vehicleDescription: aiResponses[2].predictions[0].toUpperCase(),
+    });
+  } catch (e) {
+    console.error('Failed to Contact Google API. Has the token expired?');
+    return res.sendStatus(500);
   }
-
-  return res.status(200).send({
-    fireDamage: hasFireDamageKeywords(aiResponses[1].predictions),
-    glassDamage: hasGlassDamageKeywords(aiResponses[1].predictions),
-    panelDamage: hasPanelDamageKeywords(aiResponses[1].predictions),
-    vehicleDescription: aiResponses[2].predictions[0].toUpperCase(),
-  });
 });
 
 export default router;

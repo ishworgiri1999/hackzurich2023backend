@@ -44,46 +44,52 @@ router.post('/', async (req: Request, res: Response) => {
     'Does this policy cover bodywork damage?',
   ];
 
-  const aiRequests = questions.map((question) => axios.post(
-      `https://us-central1-aiplatform.googleapis.com/v1/projects/${GOOGLE_CLOUD_PROJECT_ID}/locations/us-central1/publishers/google/models/chat-bison-32k:predict`,
-      {
-        instances: [
-          {
-            context,
-            messages: [
-              {
-                author: 'USER',
-                content: question,
-              },
-            ],
-          },
-        ],
-        parameters: {
-          temperature: 0.2,
-          tokenLimits: 2188,
-          topK: 40,
-          topP: 0.8,
-        },
-      },
-      {
-        headers: {
-          'Authorization': `Bearer ${GOOGLE_CLOUD_AUTH_TOKEN}`,
-        },
-      },
-  ));
-  const aiResponses = await axios.all(aiRequests);
+  try {
 
-  return res.status(200).send({
-    fireDamage: isAffirmative(
-        aiResponses[0].data.predictions[0].candidates[0].content,
-    ),
-    glassDamage: isAffirmative(
-        aiResponses[1].data.predictions[0].candidates[0].content,
-    ),
-    panelDamage: isAffirmative(
-        aiResponses[2].data.predictions[0].candidates[0].content,
-    ),
-  });
+    const aiRequests = questions.map((question) => axios.post(
+        `https://us-central1-aiplatform.googleapis.com/v1/projects/${GOOGLE_CLOUD_PROJECT_ID}/locations/us-central1/publishers/google/models/chat-bison-32k:predict`,
+        {
+          instances: [
+            {
+              context,
+              messages: [
+                {
+                  author: 'USER',
+                  content: question,
+                },
+              ],
+            },
+          ],
+          parameters: {
+            temperature: 0.2,
+            tokenLimits: 2188,
+            topK: 40,
+            topP: 0.8,
+          },
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${GOOGLE_CLOUD_AUTH_TOKEN}`,
+          },
+        },
+    ));
+    const aiResponses = await axios.all(aiRequests);
+
+    return res.status(200).send({
+      fireDamage: isAffirmative(
+          aiResponses[0].data.predictions[0].candidates[0].content,
+      ),
+      glassDamage: isAffirmative(
+          aiResponses[1].data.predictions[0].candidates[0].content,
+      ),
+      panelDamage: isAffirmative(
+          aiResponses[2].data.predictions[0].candidates[0].content,
+      ),
+    });
+  } catch (e) {
+    console.error('Failed to Contact Google API. Has the token expired?');
+    return res.sendStatus(502);
+  }
 });
 
 export default router;
